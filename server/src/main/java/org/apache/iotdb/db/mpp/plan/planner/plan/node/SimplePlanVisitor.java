@@ -19,6 +19,7 @@
 
 package org.apache.iotdb.db.mpp.plan.planner.plan.node;
 
+// 好像是啥都没做，就只访问了一遍
 public class SimplePlanVisitor<C> extends PlanVisitor<Void, C> {
   @Override
   public Void visitPlan(PlanNode node, C context) {

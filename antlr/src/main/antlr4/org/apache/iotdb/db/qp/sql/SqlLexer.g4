@@ -250,6 +250,10 @@ EXPLAIN
     : E X P L A I N
     ;
 
+EXPLAINLOGICALPLAN
+    : E X P L A I N L O G I C A L P L A N
+    ;
+
 FILL
     : F I L L
     ;

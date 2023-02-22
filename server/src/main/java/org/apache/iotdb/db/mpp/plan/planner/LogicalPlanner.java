@@ -42,7 +42,9 @@ public class LogicalPlanner {
 
   public LogicalQueryPlan plan(Analysis analysis) {
     long startTime = System.nanoTime();
+    // LogicalPlanVisitor并没有重写process方法，所以这里用的就还是父类StatementVistor的process
     PlanNode rootNode = new LogicalPlanVisitor(analysis).process(analysis.getStatement(), context);
+    //                                                                ↑这里是传了本analysis所容纳的statement
 
     // optimize the query logical plan
     if (analysis.getStatement().isQuery()) {
@@ -53,7 +55,7 @@ public class LogicalPlanner {
         rootNode = optimizer.optimize(rootNode, context);
       }
     }
-
+    //  前面已经把整棵树生成好了，这里只是把根节点装进Plan对象里
     return new LogicalQueryPlan(context, rootNode);
   }
 }

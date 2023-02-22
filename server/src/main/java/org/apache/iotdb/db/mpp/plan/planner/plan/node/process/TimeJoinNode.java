@@ -41,13 +41,14 @@ import java.util.stream.Collectors;
 public class TimeJoinNode extends MultiChildProcessNode {
 
   // This parameter indicates the order when executing multiway merge sort.
-  private final Ordering mergeOrder;
+  private final Ordering mergeOrder; // 枚举类，表示升序与降序
 
-  public TimeJoinNode(PlanNodeId id, Ordering mergeOrder) {
+  public TimeJoinNode(PlanNodeId id, Ordering mergeOrder) { // 构造函数，只是确定id与升降序
     super(id, new ArrayList<>());
     this.mergeOrder = mergeOrder;
   }
 
+  // 构造函数，确定节点id、升降序、子节点
   public TimeJoinNode(PlanNodeId id, Ordering mergeOrder, List<PlanNode> children) {
     super(id, children);
     this.mergeOrder = mergeOrder;
@@ -57,11 +58,13 @@ public class TimeJoinNode extends MultiChildProcessNode {
     return mergeOrder;
   }
 
+  //  复制一个相同的节点，但不具有子节点
   @Override
   public PlanNode clone() {
     return new TimeJoinNode(getPlanNodeId(), getMergeOrder());
   }
 
+  // 似乎是获取列名，怎么实现的完全没看懂
   @Override
   public List<String> getOutputColumnNames() {
     return children.stream()
@@ -71,23 +74,27 @@ public class TimeJoinNode extends MultiChildProcessNode {
         .collect(Collectors.toList());
   }
 
+  // ?
   @Override
   public <R, C> R accept(PlanVisitor<R, C> visitor, C context) {
     return visitor.visitTimeJoin(this, context);
   }
 
+  // 把本节点的属性序列化，然后写到byteBuffer里
   @Override
   protected void serializeAttributes(ByteBuffer byteBuffer) {
     PlanNodeType.TIME_JOIN.serialize(byteBuffer);
     ReadWriteIOUtils.write(mergeOrder.ordinal(), byteBuffer);
   }
 
+  // 把本节点的属性序列化，然后写到stream里
   @Override
   protected void serializeAttributes(DataOutputStream stream) throws IOException {
     PlanNodeType.TIME_JOIN.serialize(stream);
     ReadWriteIOUtils.write(mergeOrder.ordinal(), stream);
   }
 
+  //  反序列化
   public static TimeJoinNode deserialize(ByteBuffer byteBuffer) {
     Ordering mergeOrder = Ordering.values()[ReadWriteIOUtils.readInt(byteBuffer)];
     PlanNodeId planNodeId = PlanNodeId.deserialize(byteBuffer);

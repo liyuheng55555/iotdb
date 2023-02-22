@@ -85,6 +85,7 @@ import org.apache.iotdb.db.mpp.plan.planner.plan.node.write.InsertRowsNode;
 import org.apache.iotdb.db.mpp.plan.planner.plan.node.write.InsertRowsOfOneDeviceNode;
 import org.apache.iotdb.db.mpp.plan.planner.plan.node.write.InsertTabletNode;
 
+// 根据不同的访问目的，有各种各样的Visitor类，每个类中又对所有需要访问的PlanNode具体写访问函数
 public abstract class PlanVisitor<R, C> {
 
   public R process(PlanNode node, C context) {

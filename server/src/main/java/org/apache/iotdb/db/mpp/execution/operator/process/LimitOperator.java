@@ -58,7 +58,7 @@ public class LimitOperator implements ProcessOperator {
     }
     TsBlock res = block;
     if (block.getPositionCount() <= remainingLimit) {
-      remainingLimit -= block.getPositionCount();
+      remainingLimit -= block.getPositionCount(); // 为什么要减
     } else {
       res = block.getRegion(0, (int) remainingLimit);
       remainingLimit = 0;

@@ -82,6 +82,7 @@ keyWords
     | ENDTIME
     | EVERY
     | EXPLAIN
+    | EXPLAINLOGICALPLAN
     | FILL
     | FILE
     | FLUSH

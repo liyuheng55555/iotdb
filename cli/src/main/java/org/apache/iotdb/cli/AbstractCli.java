@@ -345,7 +345,7 @@ public abstract class AbstractCli {
     println("---------------------");
   }
 
-  static OperationResult handleInputCmd(String cmd, IoTDBConnection connection) {
+  static OperationResult handleInputCmd(String cmd, IoTDBConnection connection) { //
     lastProcessStatus = CODE_OK;
     String specialCmd = cmd.toLowerCase().trim();
 
@@ -781,10 +781,10 @@ public abstract class AbstractCli {
     if (s == null) {
       return true;
     }
-    String[] cmds = s.trim().split(";");
+    String[] cmds = s.trim().split(";"); // 将输入的指令按;分割
     for (String cmd : cmds) {
       if (cmd != null && !"".equals(cmd.trim())) {
-        OperationResult result = handleInputCmd(cmd, connection);
+        OperationResult result = handleInputCmd(cmd, connection); // 进一步处理
         switch (result) {
           case STOP_OPER:
             return false;

@@ -63,10 +63,10 @@ public class SeriesScanNode extends SeriesSourceNode {
   @Nullable private Filter timeFilter;
 
   // value filter for current series, could be null if doesn't exist
-  @Nullable private Filter valueFilter;
+  @Nullable private Filter valueFilter; //  value的筛选似乎也有在其他种类的节点进行
 
   // Limit for result set. The default value is -1, which means no limit
-  private int limit;
+  private int limit; // limitNode?
 
   // offset for result set. The default value is 0
   private int offset;
@@ -74,6 +74,7 @@ public class SeriesScanNode extends SeriesSourceNode {
   // The id of DataRegion where the node will run
   private TRegionReplicaSet regionReplicaSet;
 
+  // 最简单的构造函数，包含id和路径名
   public SeriesScanNode(PlanNodeId id, MeasurementPath seriesPath) {
     super(id);
     this.seriesPath = seriesPath;
@@ -84,6 +85,7 @@ public class SeriesScanNode extends SeriesSourceNode {
     this.scanOrder = scanOrder;
   }
 
+  //  复杂版的构造函数
   public SeriesScanNode(
       PlanNodeId id,
       MeasurementPath seriesPath,
@@ -197,6 +199,7 @@ public class SeriesScanNode extends SeriesSourceNode {
     return visitor.visitSeriesScan(this, context);
   }
 
+  // 本Node的参数比TimeJoinNode多一些，序列化也就复杂一些
   @Override
   protected void serializeAttributes(ByteBuffer byteBuffer) {
     PlanNodeType.SERIES_SCAN.serialize(byteBuffer);

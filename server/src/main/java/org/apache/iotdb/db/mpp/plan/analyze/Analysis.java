@@ -94,7 +94,7 @@ public class Analysis {
   private Expression groupByExpression;
 
   // all aggregations that need to be calculated
-  private Set<Expression> aggregationExpressions;
+  private Set<Expression> aggregationExpressions; // 聚合表达式
 
   // An ordered map from cross-timeseries aggregation to list of inner-timeseries aggregations. The
   // keys' order is the output one.

@@ -135,13 +135,13 @@ public class QueryExecution implements IQueryExecution {
   private static final QueryMetricsManager QUERY_METRICS = QueryMetricsManager.getInstance();
 
   public QueryExecution(
-      Statement statement,
-      MPPQueryContext context,
+      Statement statement, // 查询语句
+      MPPQueryContext context, // ?
       ExecutorService executor,
       ExecutorService writeOperationExecutor,
       ScheduledExecutorService scheduledExecutor,
-      IPartitionFetcher partitionFetcher,
-      ISchemaFetcher schemaFetcher,
+      IPartitionFetcher partitionFetcher, // 数据分区？
+      ISchemaFetcher schemaFetcher, // ?
       IClientManager<TEndPoint, SyncDataNodeInternalServiceClient> syncInternalServiceClientManager,
       IClientManager<TEndPoint, AsyncDataNodeInternalServiceClient>
           asyncInternalServiceClientManager) {
@@ -151,7 +151,8 @@ public class QueryExecution implements IQueryExecution {
     this.scheduledExecutor = scheduledExecutor;
     this.context = context;
     this.planOptimizers = new ArrayList<>();
-    this.analysis = analyze(statement, context, partitionFetcher, schemaFetcher);
+    this.analysis =
+        analyze(statement, context, partitionFetcher, schemaFetcher); // 构造中的一步是生成analysis
     this.stateMachine = new QueryStateMachine(context.getQueryId(), executor);
     this.partitionFetcher = partitionFetcher;
     this.schemaFetcher = schemaFetcher;

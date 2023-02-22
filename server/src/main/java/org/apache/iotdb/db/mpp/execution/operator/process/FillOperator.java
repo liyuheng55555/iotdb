@@ -58,11 +58,12 @@ public class FillOperator implements ProcessOperator {
 
   @Override
   public TsBlock next() {
-    TsBlock block = child.nextWithTimer();
+    TsBlock block = child.nextWithTimer(); // 从child算子获取数据
     if (block == null) {
       return null;
     }
 
+    // 某种检查
     checkArgument(
         outputColumnCount == block.getValueColumnCount(),
         "outputColumnCount is not equal to value column count of child operator's TsBlock");

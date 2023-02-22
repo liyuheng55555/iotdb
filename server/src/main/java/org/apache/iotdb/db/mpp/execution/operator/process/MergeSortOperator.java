@@ -44,7 +44,7 @@ public class MergeSortOperator implements ProcessOperator {
   private final List<TSDataType> dataTypes;
   private final TsBlockBuilder tsBlockBuilder;
   private final int inputOperatorsCount;
-  private final TsBlock[] inputTsBlocks;
+  private final TsBlock[] inputTsBlocks; // 输入
   private final boolean[] noMoreTsBlocks;
   private final MergeSortHeap mergeSortHeap;
   private final Comparator<MergeSortKey> comparator;
@@ -52,8 +52,8 @@ public class MergeSortOperator implements ProcessOperator {
   private boolean finished;
 
   public MergeSortOperator(
-      OperatorContext operatorContext,
-      List<Operator> inputOperators,
+      OperatorContext operatorContext, // 不知道是啥
+      List<Operator> inputOperators, // 输入的算子
       List<TSDataType> dataTypes,
       Comparator<MergeSortKey> comparator) {
     this.operatorContext = operatorContext;
@@ -97,7 +97,7 @@ public class MergeSortOperator implements ProcessOperator {
     // 1. fill consumed up TsBlock
     for (int i = 0; i < inputOperatorsCount; i++) {
       if (!noMoreTsBlocks[i] && isTsBlockEmpty(i) && inputOperators.get(i).hasNextWithTimer()) {
-        inputTsBlocks[i] = inputOperators.get(i).nextWithTimer();
+        inputTsBlocks[i] = inputOperators.get(i).nextWithTimer(); // 如何保证input都是有序的?
         if (inputTsBlocks[i] == null || inputTsBlocks[i].isEmpty()) {
           return null;
         }
@@ -107,11 +107,13 @@ public class MergeSortOperator implements ProcessOperator {
 
     // 2. check if we can directly return the original TsBlock instead of merging way
     MergeSortKey minMergeSortKey = mergeSortHeap.poll();
-    if (mergeSortHeap.isEmpty()
+    if (mergeSortHeap.isEmpty() // heap中就一个元素
         || comparator.compare(
                 new MergeSortKey(
-                    minMergeSortKey.tsBlock, minMergeSortKey.tsBlock.getPositionCount() - 1),
-                mergeSortHeap.peek())
+                    minMergeSortKey.tsBlock,
+                    minMergeSortKey.tsBlock.getPositionCount() - 1), // 堆顶的最后一行
+                mergeSortHeap.peek() // 堆顶第二个TsBlock
+                )
             < 0) {
       inputTsBlocks[minMergeSortKey.columnIndex] = null;
       return minMergeSortKey.rowIndex == 0
@@ -122,10 +124,11 @@ public class MergeSortOperator implements ProcessOperator {
 
     // 3. do merge sort until one TsBlock is consumed up
     tsBlockBuilder.reset();
-    TimeColumnBuilder timeBuilder = tsBlockBuilder.getTimeColumnBuilder();
-    ColumnBuilder[] valueColumnBuilders = tsBlockBuilder.getValueColumnBuilders();
+    TimeColumnBuilder timeBuilder = tsBlockBuilder.getTimeColumnBuilder(); // 后面主要是对这两个字builder进行操作
+    ColumnBuilder[] valueColumnBuilders =
+        tsBlockBuilder.getValueColumnBuilders(); // 所以tsbBuilder就没怎么出现了
     while (!mergeSortHeap.isEmpty()) {
-      MergeSortKey mergeSortKey = mergeSortHeap.poll();
+      MergeSortKey mergeSortKey = mergeSortHeap.poll(); // 取出堆顶
       TsBlock targetBlock = mergeSortKey.tsBlock;
       int rowIndex = mergeSortKey.rowIndex;
       timeBuilder.writeLong(targetBlock.getTimeByIndex(rowIndex));
@@ -137,13 +140,13 @@ public class MergeSortOperator implements ProcessOperator {
         valueColumnBuilders[i].write(targetBlock.getColumn(i), rowIndex);
       }
       tsBlockBuilder.declarePosition();
-      if (mergeSortKey.rowIndex == mergeSortKey.tsBlock.getPositionCount() - 1) {
+      if (mergeSortKey.rowIndex == mergeSortKey.tsBlock.getPositionCount() - 1) { // 本key已经消耗完
         inputTsBlocks[mergeSortKey.columnIndex] = null;
         if (!mergeSortHeap.isEmpty()
             && comparator.compare(mergeSortHeap.peek(), mergeSortKey) > 0) {
           break;
         }
-      } else {
+      } else { // 本key尚未消耗完
         mergeSortKey.rowIndex++;
         mergeSortHeap.push(mergeSortKey);
       }

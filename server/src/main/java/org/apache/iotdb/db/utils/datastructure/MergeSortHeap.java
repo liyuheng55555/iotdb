@@ -22,6 +22,7 @@ package org.apache.iotdb.db.utils.datastructure;
 import java.util.Arrays;
 import java.util.Comparator;
 
+// 一个标准的堆，堆中元素为TsBlock
 public class MergeSortHeap {
   private final MergeSortKey[] heap;
   private int heapSize;
@@ -38,6 +39,7 @@ public class MergeSortHeap {
     return heapSize == 0;
   }
 
+  // 入堆：插到堆底，然后上移
   public void push(MergeSortKey mergeSortKey) {
     if (heapSize == 0) {
       heap[0] = mergeSortKey;
@@ -46,6 +48,7 @@ public class MergeSortHeap {
     ++heapSize;
   }
 
+  // 弹出堆顶
   public MergeSortKey poll() {
     MergeSortKey res = heap[0];
     heap[0] = heap[heapSize - 1];
@@ -54,6 +57,7 @@ public class MergeSortHeap {
     return res;
   }
 
+  // 获取堆顶
   public MergeSortKey peek() {
     return heap[0];
   }
@@ -81,6 +85,7 @@ public class MergeSortHeap {
     return smallerChildIndex;
   }
 
+  // 节点下降
   private void shiftDown(int parentIndex, MergeSortKey parent) {
     if (parentIndex == heapSize - 1) return;
 
@@ -96,10 +101,11 @@ public class MergeSortHeap {
     }
   }
 
+  // 节点上升
   private void shiftUp(int childIndex, MergeSortKey child) {
     if (childIndex == 0) return;
 
-    int parentIndex = (childIndex - 1) >>> 1;
+    int parentIndex = (childIndex - 1) >>> 1; // 父亲节点
     MergeSortKey parent = heap[parentIndex];
 
     if (comparator.compare(parent, child) > 0) {

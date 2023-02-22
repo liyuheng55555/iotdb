@@ -120,6 +120,7 @@ import org.apache.iotdb.db.mpp.plan.statement.metadata.template.ShowNodesInSchem
 import org.apache.iotdb.db.mpp.plan.statement.metadata.template.ShowPathSetTemplateStatement;
 import org.apache.iotdb.db.mpp.plan.statement.metadata.template.ShowPathsUsingTemplateStatement;
 import org.apache.iotdb.db.mpp.plan.statement.metadata.template.ShowSchemaTemplateStatement;
+import org.apache.iotdb.db.mpp.plan.statement.sys.ExplainLogicalPlanStatement;
 import org.apache.iotdb.db.mpp.plan.statement.sys.ExplainStatement;
 import org.apache.iotdb.db.mpp.plan.statement.sys.ShowQueriesStatement;
 import org.apache.iotdb.db.mpp.plan.statement.sys.ShowVersionStatement;
@@ -210,6 +211,15 @@ public class AnalyzeVisitor extends StatementVisitor<Analysis, MPPQueryContext> 
   public Analysis visitExplain(ExplainStatement explainStatement, MPPQueryContext context) {
     Analysis analysis = visitQuery(explainStatement.getQueryStatement(), context);
     analysis.setStatement(explainStatement);
+    analysis.setFinishQueryAfterAnalyze(true);
+    return analysis;
+  }
+
+  @Override
+  public Analysis visitExplainLogicalPlan(
+      ExplainLogicalPlanStatement explainLogicalPlanStatement, MPPQueryContext context) {
+    Analysis analysis = visitQuery(explainLogicalPlanStatement.getQueryStatement(), context);
+    analysis.setStatement(explainLogicalPlanStatement);
     analysis.setFinishQueryAfterAnalyze(true);
     return analysis;
   }

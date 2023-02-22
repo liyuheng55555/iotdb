@@ -29,6 +29,7 @@ import java.util.List;
  * This class is used to record the context of a query including QueryId, query statement, session
  * info and so on
  */
+// 包含了很多信息,比如sql语句 sql编号 起始时间, 但这些信息都比较浅层次
 public class MPPQueryContext {
   private String sql;
   private QueryId queryId;

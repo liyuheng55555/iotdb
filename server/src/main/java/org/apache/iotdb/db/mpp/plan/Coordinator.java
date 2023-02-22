@@ -111,7 +111,7 @@ public class Coordinator {
       queryContext.setQueryType(((IConfigStatement) statement).getQueryType());
       return new ConfigExecution(queryContext, statement, executor);
     }
-    return new QueryExecution(
+    return new QueryExecution( // 构造QueryExcution
         statement,
         queryContext,
         executor,

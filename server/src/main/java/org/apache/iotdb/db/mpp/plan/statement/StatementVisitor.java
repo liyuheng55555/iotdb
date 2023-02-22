@@ -80,16 +80,7 @@ import org.apache.iotdb.db.mpp.plan.statement.metadata.template.ShowPathSetTempl
 import org.apache.iotdb.db.mpp.plan.statement.metadata.template.ShowPathsUsingTemplateStatement;
 import org.apache.iotdb.db.mpp.plan.statement.metadata.template.ShowSchemaTemplateStatement;
 import org.apache.iotdb.db.mpp.plan.statement.metadata.template.UnsetSchemaTemplateStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.AuthorStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.ClearCacheStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.ExplainStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.FlushStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.KillQueryStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.LoadConfigurationStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.MergeStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.SetSystemStatusStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.ShowQueriesStatement;
-import org.apache.iotdb.db.mpp.plan.statement.sys.ShowVersionStatement;
+import org.apache.iotdb.db.mpp.plan.statement.sys.*;
 import org.apache.iotdb.db.mpp.plan.statement.sys.sync.CreatePipeSinkStatement;
 import org.apache.iotdb.db.mpp.plan.statement.sys.sync.CreatePipeStatement;
 import org.apache.iotdb.db.mpp.plan.statement.sys.sync.DropPipeSinkStatement;
@@ -304,6 +295,11 @@ public abstract class StatementVisitor<R, C> {
 
   public R visitExplain(ExplainStatement explainStatement, C context) {
     return visitStatement(explainStatement, context);
+  }
+
+  public R visitExplainLogicalPlan(
+      ExplainLogicalPlanStatement explainLogicalPlanStatement, C context) {
+    return visitStatement(explainLogicalPlanStatement, context);
   }
 
   public R visitDeleteData(DeleteDataStatement deleteDataStatement, C context) {

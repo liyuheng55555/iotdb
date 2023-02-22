@@ -41,6 +41,7 @@ import org.apache.iotdb.db.mpp.plan.statement.metadata.CountTimeSeriesStatement;
 import org.apache.iotdb.db.mpp.plan.statement.metadata.ShowChildNodesStatement;
 import org.apache.iotdb.db.mpp.plan.statement.metadata.ShowChildPathsStatement;
 import org.apache.iotdb.db.mpp.plan.statement.metadata.template.ShowPathsUsingTemplateStatement;
+import org.apache.iotdb.db.mpp.plan.statement.sys.ExplainLogicalPlanStatement;
 import org.apache.iotdb.db.mpp.plan.statement.sys.ExplainStatement;
 import org.apache.iotdb.db.mpp.plan.statement.sys.ShowVersionStatement;
 import org.apache.iotdb.db.mpp.plan.statement.sys.sync.ShowPipeSinkTypeStatement;
@@ -94,6 +95,41 @@ public class StatementMemorySourceVisitor
     PlanNode rootWithExchange = planner.addExchangeNode(planner.rewriteSource());
     List<String> lines =
         rootWithExchange.accept(new PlanGraphPrinter(), new PlanGraphPrinter.GraphContext());
+
+    TsBlockBuilder builder = new TsBlockBuilder(Collections.singletonList(TSDataType.TEXT));
+    lines.forEach(
+        line -> {
+          builder.getTimeColumnBuilder().writeLong(0L);
+          builder.getColumnBuilder(0).writeBinary(new Binary(line));
+          builder.declarePosition();
+        });
+    TsBlock tsBlock = builder.build();
+
+    return new StatementMemorySource(tsBlock, header);
+  }
+
+  @Override
+  public StatementMemorySource visitExplainLogicalPlan(
+      ExplainLogicalPlanStatement node, StatementMemorySourceContext context) {
+    context.getAnalysis().setStatement(node.getQueryStatement());
+    DatasetHeader header =
+        new DatasetHeader(
+            Collections.singletonList(
+                new ColumnHeader(IoTDBConstant.COLUMN_DISTRIBUTION_PLAN, TSDataType.TEXT)),
+            true);
+    if (sourceNotExist(context)) {
+      return new StatementMemorySource(new TsBlock(0), header);
+    }
+    LogicalQueryPlan logicalPlan =
+        new LogicalPlanner(context.getQueryContext(), new ArrayList<>())
+            .plan(context.getAnalysis());
+    //      DistributionPlanner planner = new DistributionPlanner(context.getAnalysis(),
+    // logicalPlan);
+    //      PlanNode rootWithExchange = planner.addExchangeNode(planner.rewriteSource());
+    List<String> lines =
+        logicalPlan
+            .getRootNode()
+            .accept(new PlanGraphPrinter(), new PlanGraphPrinter.GraphContext());
 
     TsBlockBuilder builder = new TsBlockBuilder(Collections.singletonList(TSDataType.TEXT));
     lines.forEach(

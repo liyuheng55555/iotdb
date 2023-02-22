@@ -59,7 +59,7 @@ dclStatement
     ;
 
 utilityStatement
-    : merge | fullMerge | flush | clearCache | settle | explain
+    : merge | fullMerge | flush | clearCache | settle | explain | explainLogicalPlan
     | setSystemStatus | showVersion | showFlushInfo | showLockInfo | showQueryResource
     | showQueries | killQuery | grantWatermarkEmbedding | revokeWatermarkEmbedding
     | loadConfiguration | loadTimeseries | loadFile | removeFile | unloadFile;
@@ -714,6 +714,11 @@ settle
 // Explain
 explain
     : EXPLAIN selectStatement
+    ;
+    
+// explain logical plan
+explainLogicalPlan
+    : EXPLAINLOGICALPLAN selectStatement
     ;
 
 // Set System To readonly/running/error
