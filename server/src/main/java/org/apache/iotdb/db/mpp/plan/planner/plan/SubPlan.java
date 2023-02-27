@@ -19,8 +19,11 @@
 
 package org.apache.iotdb.db.mpp.plan.planner.plan;
 
+import org.apache.iotdb.db.mpp.plan.planner.plan.node.PlanGraphPrinter;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SubPlan {
   private PlanFragment planFragment;
@@ -65,5 +68,35 @@ public class SubPlan {
           result.addAll(child.getPlanFragmentList());
         });
     return result;
+  }
+
+  private List<String> addEdge(List<String> graph) {
+    List<String> newGraph = graph.stream().map(s -> '|'+s+'|').collect(Collectors.toList());
+    String ___1 = graph.get(0).replaceAll(".", "-");
+    ___1 = "┌" + ___1 + "┐";
+    String ___2 = graph.get(0).replaceAll(".", "-");
+    ___2 = "└" + ___2 + "┘";
+    newGraph.add(0, ___1);
+    newGraph.add(newGraph.size(), ___2);
+    return newGraph;
+//    return graph;
+  }
+
+  public void show() {
+    List<String> myselfGraph = PlanGraphPrinter.getGraph(planFragment.getPlanNodeTree());
+    myselfGraph = addEdge(myselfGraph);
+    for (String s : myselfGraph) {
+      System.out.println(s);
+    }
+    List<List<String>> childGraphs = children.stream().map(
+            c -> PlanGraphPrinter.getGraph(c.planFragment.getPlanNodeTree())
+    ).collect(Collectors.toList());
+    for (List<String> ls : childGraphs) {
+      ls = addEdge(ls);
+      System.out.println();
+      for (String s : ls) {
+        System.out.println(s);
+      }
+    }
   }
 }

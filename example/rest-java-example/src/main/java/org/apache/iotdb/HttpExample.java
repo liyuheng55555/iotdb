@@ -46,12 +46,12 @@ public class HttpExample {
     HttpExample httpExample = new HttpExample();
     httpExample.ping();
     httpExample.insertTablet();
-    httpExample.query();
+//    httpExample.query();
   }
 
   public void ping() {
     CloseableHttpClient httpClient = SSLClient.getInstance().getHttpClient();
-    HttpGet httpGet = new HttpGet("http://127.0.0.1:18080/ping");
+    HttpGet httpGet = new HttpGet("http://192.168.0.36:18080/ping");
     CloseableHttpResponse response = null;
     try {
       response = httpClient.execute(httpGet);
@@ -89,22 +89,34 @@ public class HttpExample {
     CloseableHttpClient httpClient = SSLClient.getInstance().getHttpClient();
     CloseableHttpResponse response = null;
     try {
-      HttpPost httpPost = getHttpPost("http://127.0.0.1:18080/rest/v1/insertTablet");
-      String json =
-          "{"
-              + "\"timestamps\":[1635232143960,1635232153960],"
-              + "\"measurements\":[\"s3\",\"s4\",\"s5\",\"s6\",\"s7\",\"s8\"],"
-              + "\"data_types\":[\"TEXT\",\"INT32\",\"INT64\",\"FLOAT\",\"BOOLEAN\",\"DOUBLE\"],"
-              + "\"values\":[[\"2aa\",\"\"],[11,2],[1635000012345555,1635000012345556],[1.41,null],[null,false],[null,3.5555]],"
-              + "\"is_aligned\":false,"
-              + "\"device\":\"root.sg25\""
-              + "}";
-      httpPost.setEntity(new StringEntity(json, Charset.defaultCharset()));
-      response = httpClient.execute(httpPost);
-      HttpEntity responseEntity = response.getEntity();
-      String message = EntityUtils.toString(responseEntity, "utf-8");
-      JsonObject result = JsonParser.parseString(message).getAsJsonObject();
-      System.out.println(result);
+      HttpPost httpPost = getHttpPost("http://192.168.0.36:18080/rest/v1/insertTablet");
+//      String json =
+//          "{"
+//              + "\"timestamps\":[1635232143960,1635232153960],"
+//              + "\"measurements\":[\"s3\",\"s4\",\"s5\",\"s6\",\"s7\",\"s8\"],"
+//              + "\"data_types\":[\"TEXT\",\"INT32\",\"INT64\",\"FLOAT\",\"BOOLEAN\",\"DOUBLE\"],"
+//              + "\"values\":[[\"2aa\",\"\"],[11,2],[1635000012345555,1635000012345556],[1.41,null],[null,false],[null,3.5555]],"
+//              + "\"is_aligned\":false,"
+//              + "\"device\":\"root.sg25\""
+//              + "}";
+      for(int i = 0; i < 100000; i++) {
+        String json =
+                "{"
+                        + "\"timestamps\":[" + i * 1000000 + "],"
+                        + "\"measurements\":[\"c\"],"
+                        + "\"data_types\":[\"FLOAT\"],"
+                        + "\"values\":[[" + i + "]],"
+                        + "\"is_aligned\":false,"
+                        + "\"device\":\"root.gg\""
+                        + "}";
+        httpPost.setEntity(new StringEntity(json, Charset.defaultCharset()));
+        response = httpClient.execute(httpPost);
+        HttpEntity responseEntity = response.getEntity();
+        String message = EntityUtils.toString(responseEntity, "utf-8");
+        JsonObject result = JsonParser.parseString(message).getAsJsonObject();
+        System.out.println(result);
+      }
+
     } catch (IOException e) {
       e.printStackTrace();
 

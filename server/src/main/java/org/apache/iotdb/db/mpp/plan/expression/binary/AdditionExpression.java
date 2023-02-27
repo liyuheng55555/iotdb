@@ -25,20 +25,20 @@ import org.apache.iotdb.db.mpp.plan.expression.ExpressionType;
 import java.nio.ByteBuffer;
 
 public class AdditionExpression extends ArithmeticBinaryExpression {
-
+  // 构造函数, 直接super
   public AdditionExpression(Expression leftExpression, Expression rightExpression) {
     super(leftExpression, rightExpression);
   }
-
+  // 暂时不知道bytebuffer是啥, 序列化结果?
   public AdditionExpression(ByteBuffer byteBuffer) {
     super(byteBuffer);
   }
-
+  // 运算符
   @Override
   protected String operator() {
     return "+";
   }
-
+  // 类型
   @Override
   public ExpressionType getExpressionType() {
     return ExpressionType.ADDITION;

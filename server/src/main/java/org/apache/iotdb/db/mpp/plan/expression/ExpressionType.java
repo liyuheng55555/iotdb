@@ -56,6 +56,8 @@ public enum ExpressionType {
   LOGIC_OR((short) 19, (short) 200),
 
   NULL((short) 20, (short) 1400),
+
+  POWER((short) 21, (short) 950),
   ;
 
   private final short expressionType;

@@ -28,6 +28,7 @@ import org.apache.iotdb.db.mpp.plan.planner.plan.FragmentInstance;
 import org.apache.iotdb.db.mpp.plan.planner.plan.LogicalQueryPlan;
 import org.apache.iotdb.db.mpp.plan.planner.plan.PlanFragment;
 import org.apache.iotdb.db.mpp.plan.planner.plan.SubPlan;
+import org.apache.iotdb.db.mpp.plan.planner.plan.node.PlanGraphPrinter;
 import org.apache.iotdb.db.mpp.plan.planner.plan.node.PlanNode;
 import org.apache.iotdb.db.mpp.plan.planner.plan.node.WritePlanNode;
 import org.apache.iotdb.db.mpp.plan.planner.plan.node.process.ExchangeNode;
@@ -72,8 +73,14 @@ public class DistributionPlanner {
   }
 
   public DistributedQueryPlan planFragments() {
+    System.out.println("logical plan:");
+    PlanGraphPrinter.print(logicalPlan.getRootNode());
     PlanNode rootAfterRewrite = rewriteSource();
+    System.out.println("\nsource rewrite plan:");
+    PlanGraphPrinter.print(rootAfterRewrite);
     PlanNode rootWithExchange = addExchangeNode(rootAfterRewrite);
+    System.out.println("\nadd exchange node:");
+    PlanGraphPrinter.print(rootWithExchange);
     if (analysis.getStatement() instanceof QueryStatement
         || analysis.getStatement() instanceof ShowQueriesStatement) {
       analysis
@@ -81,6 +88,7 @@ public class DistributionPlanner {
           .setColumnToTsBlockIndexMap(rootWithExchange.getOutputColumnNames());
     }
     SubPlan subPlan = splitFragment(rootWithExchange);
+    subPlan.show();
     // Mark the root Fragment of root SubPlan as `root`
     subPlan.getPlanFragment().setRoot(true);
     List<FragmentInstance> fragmentInstances = planFragmentInstances(subPlan);

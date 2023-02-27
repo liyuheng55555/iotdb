@@ -205,10 +205,10 @@ public class QueryExecution implements IQueryExecution {
     if (isQuery()) {
       long currentTime = System.currentTimeMillis();
       long remainTime = context.getTimeOut() - (currentTime - context.getStartTime());
-      if (remainTime <= 0) {
-        throw new QueryTimeoutRuntimeException(
-            context.getStartTime(), currentTime, context.getTimeOut());
-      }
+//      if (remainTime <= 0) {
+//        throw new QueryTimeoutRuntimeException(
+//            context.getStartTime(), currentTime, context.getTimeOut());
+//      }
       context.setTimeOut(remainTime);
     }
 

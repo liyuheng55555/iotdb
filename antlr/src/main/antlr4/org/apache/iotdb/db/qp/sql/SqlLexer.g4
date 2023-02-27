@@ -934,6 +934,7 @@ MINUS : '-';
 PLUS : '+';
 DIV : '/';
 MOD : '%';
+POWER : '^';
 
 
 // Operators. Comparation
