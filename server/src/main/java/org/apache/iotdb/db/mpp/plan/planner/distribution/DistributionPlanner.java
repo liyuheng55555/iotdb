@@ -74,13 +74,28 @@ public class DistributionPlanner {
 
   public DistributedQueryPlan planFragments() {
     System.out.println("logical plan:");
-    PlanGraphPrinter.print(logicalPlan.getRootNode());
+    try {
+      PlanGraphPrinter.print(logicalPlan.getRootNode());
+    }
+    catch (Exception e) {
+      System.out.println("exception");
+    }
     PlanNode rootAfterRewrite = rewriteSource();
     System.out.println("\nsource rewrite plan:");
-    PlanGraphPrinter.print(rootAfterRewrite);
+    try {
+      PlanGraphPrinter.print(rootAfterRewrite);
+    }
+    catch (Exception e) {
+      System.out.println("exception");
+    }
     PlanNode rootWithExchange = addExchangeNode(rootAfterRewrite);
     System.out.println("\nadd exchange node:");
-    PlanGraphPrinter.print(rootWithExchange);
+    try {
+      PlanGraphPrinter.print(rootWithExchange);
+    }
+    catch (Exception e) {
+      System.out.println("exception");
+    }
     if (analysis.getStatement() instanceof QueryStatement
         || analysis.getStatement() instanceof ShowQueriesStatement) {
       analysis
@@ -88,7 +103,12 @@ public class DistributionPlanner {
           .setColumnToTsBlockIndexMap(rootWithExchange.getOutputColumnNames());
     }
     SubPlan subPlan = splitFragment(rootWithExchange);
-    subPlan.show();
+    try {
+      subPlan.show();
+    }
+    catch (Exception e) {
+      System.out.println("exception");
+    }
     // Mark the root Fragment of root SubPlan as `root`
     subPlan.getPlanFragment().setRoot(true);
     List<FragmentInstance> fragmentInstances = planFragmentInstances(subPlan);

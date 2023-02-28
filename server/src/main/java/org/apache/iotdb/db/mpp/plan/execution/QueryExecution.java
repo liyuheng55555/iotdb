@@ -27,7 +27,6 @@ import org.apache.iotdb.commons.exception.IoTDBException;
 import org.apache.iotdb.db.conf.IoTDBConfig;
 import org.apache.iotdb.db.conf.IoTDBDescriptor;
 import org.apache.iotdb.db.exception.query.KilledByOthersException;
-import org.apache.iotdb.db.exception.query.QueryTimeoutRuntimeException;
 import org.apache.iotdb.db.mpp.common.MPPQueryContext;
 import org.apache.iotdb.db.mpp.common.header.DatasetHeader;
 import org.apache.iotdb.db.mpp.execution.QueryState;
@@ -205,10 +204,10 @@ public class QueryExecution implements IQueryExecution {
     if (isQuery()) {
       long currentTime = System.currentTimeMillis();
       long remainTime = context.getTimeOut() - (currentTime - context.getStartTime());
-//      if (remainTime <= 0) {
-//        throw new QueryTimeoutRuntimeException(
-//            context.getStartTime(), currentTime, context.getTimeOut());
-//      }
+      //      if (remainTime <= 0) {
+      //        throw new QueryTimeoutRuntimeException(
+      //            context.getStartTime(), currentTime, context.getTimeOut());
+      //      }
       context.setTimeOut(remainTime);
     }
 

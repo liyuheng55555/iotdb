@@ -23,7 +23,6 @@ import org.apache.iotdb.common.rpc.thrift.TRegionReplicaSet;
 import org.apache.iotdb.commons.partition.DataPartition;
 import org.apache.iotdb.commons.path.PartialPath;
 import org.apache.iotdb.db.mpp.plan.expression.Expression;
-import org.apache.iotdb.db.mpp.plan.planner.plan.node.metedata.read.SchemaFetchScanNode;
 import org.apache.iotdb.db.mpp.plan.planner.plan.node.process.AggregationNode;
 import org.apache.iotdb.db.mpp.plan.planner.plan.node.process.DeviceMergeNode;
 import org.apache.iotdb.db.mpp.plan.planner.plan.node.process.DeviceViewIntoNode;
@@ -88,7 +87,7 @@ public class PlanGraphPrinter extends PlanVisitor<List<String>, PlanGraphPrinter
     List<String> boxValue = new ArrayList<>();
     String className = node.getClass().getTypeName();
     String[] names = className.split("\\.");
-    String lastName = names[names.length-1];
+    String lastName = names[names.length - 1];
     boxValue.add(String.format("%s-%s", lastName, node.getPlanNodeId().getId()));
     return render(node, boxValue, context);
   }
@@ -424,11 +423,11 @@ public class PlanGraphPrinter extends PlanVisitor<List<String>, PlanGraphPrinter
     return render(node, boxValue, context);
   }
 
-//  @Override
-//  public List<String> visitSchemaFetchScan(SchemaFetchScanNode node, GraphContext context) {
-//    List<String> boxValue = new ArrayList<>();
-////    boxValue.add(String.format(SchemaFetchScanNode))
-//  }
+  //  @Override
+  //  public List<String> visitSchemaFetchScan(SchemaFetchScanNode node, GraphContext context) {
+  //    List<String> boxValue = new ArrayList<>();
+  ////    boxValue.add(String.format(SchemaFetchScanNode))
+  //  }
 
   private String printRegion(TRegionReplicaSet regionReplicaSet) {
     return String.format(

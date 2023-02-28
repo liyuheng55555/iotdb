@@ -38,21 +38,7 @@ import org.apache.iotdb.db.mpp.execution.operator.window.WindowType;
 import org.apache.iotdb.db.mpp.plan.analyze.ExpressionAnalyzer;
 import org.apache.iotdb.db.mpp.plan.expression.Expression;
 import org.apache.iotdb.db.mpp.plan.expression.ExpressionType;
-import org.apache.iotdb.db.mpp.plan.expression.binary.AdditionExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.BinaryExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.CompareBinaryExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.DivisionExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.EqualToExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.GreaterEqualExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.GreaterThanExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.LessEqualExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.LessThanExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.LogicAndExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.LogicOrExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.ModuloExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.MultiplicationExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.NonEqualExpression;
-import org.apache.iotdb.db.mpp.plan.expression.binary.SubtractionExpression;
+import org.apache.iotdb.db.mpp.plan.expression.binary.*;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.ConstantOperand;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.TimeSeriesOperand;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.TimestampOperand;
@@ -2220,6 +2206,9 @@ public class ASTVisitor extends IoTDBSqlParserBaseVisitor<Statement> {
       }
       if (context.OPERATOR_OR() != null) {
         return new LogicOrExpression(leftExpression, rightExpression);
+      }
+      if (context.POWER() != null) {
+        return new PowerExpression(leftExpression, rightExpression);
       }
       throw new UnsupportedOperationException();
     }

@@ -912,7 +912,7 @@ public class AnalyzeVisitor extends StatementVisitor<Analysis, MPPQueryContext> 
         // for AggregationExpression, only the first Expression of input need to transform
         sourceTransformExpressions.add(expression.getExpressions().get(0));
       }
-    } else {
+    } else { // 如果没有聚合,那么sourceTransform就是select
       sourceTransformExpressions = analysis.getSelectExpressions();
     }
     if (queryStatement.hasGroupByExpression()) {
