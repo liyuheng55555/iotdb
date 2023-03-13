@@ -53,11 +53,13 @@ import org.apache.iotdb.db.mpp.plan.expression.binary.MultiplicationExpression;
 import org.apache.iotdb.db.mpp.plan.expression.binary.NonEqualExpression;
 import org.apache.iotdb.db.mpp.plan.expression.binary.SubtractionExpression;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.ConstantOperand;
+import org.apache.iotdb.db.mpp.plan.expression.leaf.NullOperand;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.TimeSeriesOperand;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.TimestampOperand;
 import org.apache.iotdb.db.mpp.plan.expression.multi.FunctionExpression;
 import org.apache.iotdb.db.mpp.plan.expression.multi.builtin.BuiltInScalarFunctionHelperFactory;
 import org.apache.iotdb.db.mpp.plan.expression.ternary.BetweenExpression;
+import org.apache.iotdb.db.mpp.plan.expression.ternary.CaseWhenThenExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.InExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.IsNullExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.LikeExpression;
@@ -2336,7 +2338,37 @@ public class ASTVisitor extends IoTDBSqlParserBaseVisitor<Statement> {
       return parseConstantOperand(context.constant(0));
     }
 
+    if (context.caseWhenThenExpression() != null) {
+      return parseCaseWhenThenExpression(context.caseWhenThenExpression(), canUseFullPath);
+    }
+
     throw new UnsupportedOperationException();
+  }
+
+  private Expression parseCaseWhenThenExpression(
+      IoTDBSqlParser.CaseWhenThenExpressionContext context, boolean canUseFullPath) {
+    Expression endElse = new NullOperand();
+    if (context.elseExpression != null) { // get the last else expression
+      endElse = parseExpression(context.elseExpression, canUseFullPath);
+    }
+    CaseWhenThenExpression result =
+        parseWhenThenExpressions(context.whenThenExpressions(), canUseFullPath, endElse);
+    result.setRoot(true);
+    return result;
+  }
+
+  private CaseWhenThenExpression parseWhenThenExpressions(
+      IoTDBSqlParser.WhenThenExpressionsContext context,
+      boolean canUseFullPath,
+      Expression endElse) {
+    Expression when = parseExpression(context.whenExpression, canUseFullPath);
+    Expression then = parseExpression(context.thenExpression, canUseFullPath);
+    Expression elseExpression = endElse;
+    if (context.whenThenExpressions() != null) {
+      elseExpression =
+          parseWhenThenExpressions(context.whenThenExpressions(), canUseFullPath, endElse);
+    }
+    return new CaseWhenThenExpression(when, then, elseExpression, false);
   }
 
   private Expression parseCastFunction(

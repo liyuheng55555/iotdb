@@ -956,6 +956,22 @@ READ_TEMPLATE_APPLICATION
     : R E A D '_' T E M P L A T E '_' A P P L I C A T I O N
     ;
 
+CASE
+    : C A S E
+    ;
+
+WHEN
+    : W H E N
+    ;
+
+THEN
+    : T H E N
+    ;
+
+ELSE
+    : E L S E
+    ;
+
 /**
  * 3. Operators
  */
