@@ -21,6 +21,7 @@ package org.apache.iotdb.db.mpp.plan.expression.ternary;
 
 import org.apache.iotdb.db.mpp.plan.expression.Expression;
 import org.apache.iotdb.db.mpp.plan.expression.ExpressionType;
+import org.apache.iotdb.db.mpp.plan.expression.visitor.ExpressionVisitor;
 
 import java.nio.ByteBuffer;
 
@@ -89,5 +90,10 @@ public class CaseWhenThenExpression extends TernaryExpression {
   @Override
   protected String operator() {
     return "CWT";
+  }
+
+  @Override
+  public <R, C> R accept(ExpressionVisitor<R, C> visitor, C context) {
+    return visitor.visitCaseWhenThenExpression(this, context);
   }
 }

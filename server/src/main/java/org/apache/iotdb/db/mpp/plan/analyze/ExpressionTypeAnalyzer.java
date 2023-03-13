@@ -31,6 +31,7 @@ import org.apache.iotdb.db.mpp.plan.expression.leaf.TimeSeriesOperand;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.TimestampOperand;
 import org.apache.iotdb.db.mpp.plan.expression.multi.FunctionExpression;
 import org.apache.iotdb.db.mpp.plan.expression.ternary.BetweenExpression;
+import org.apache.iotdb.db.mpp.plan.expression.ternary.CaseWhenThenExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.InExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.IsNullExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.LikeExpression;
@@ -294,6 +295,14 @@ public class ExpressionTypeAnalyzer {
     @Override
     public TSDataType visitNullOperand(NullOperand nullOperand, Void context) {
       return null;
+    }
+
+    @Override
+    public TSDataType visitCaseWhenThenExpression(
+        CaseWhenThenExpression caseWhenThenExpression, Void context) {
+      TSDataType thenType = process(caseWhenThenExpression.getThen(), context);
+      TSDataType elseType = process(caseWhenThenExpression.getElse(), context);
+      return TSDataType.getTsDataType((byte) Math.max(thenType.ordinal(), elseType.ordinal()));
     }
 
     private TSDataType setExpressionType(Expression expression, TSDataType type) {

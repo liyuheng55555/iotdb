@@ -31,6 +31,7 @@ import org.apache.iotdb.db.mpp.plan.expression.leaf.TimeSeriesOperand;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.TimestampOperand;
 import org.apache.iotdb.db.mpp.plan.expression.multi.FunctionExpression;
 import org.apache.iotdb.db.mpp.plan.expression.ternary.BetweenExpression;
+import org.apache.iotdb.db.mpp.plan.expression.ternary.CaseWhenThenExpression;
 import org.apache.iotdb.db.mpp.plan.expression.ternary.TernaryExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.InExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.IsNullExpression;
@@ -131,5 +132,9 @@ public abstract class ExpressionVisitor<R, C> {
 
   public R visitNullOperand(NullOperand nullOperand, C context) {
     return visitLeafOperand(nullOperand, context);
+  }
+
+  public R visitCaseWhenThenExpression(CaseWhenThenExpression caseWhenThenExpression, C context) {
+    return visitTernaryExpression(caseWhenThenExpression, context);
   }
 }
