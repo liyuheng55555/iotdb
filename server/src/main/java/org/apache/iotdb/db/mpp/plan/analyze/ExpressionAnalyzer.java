@@ -218,6 +218,8 @@ public class ExpressionAnalyzer {
       return ResultColumn.ColumnType.RAW;
     } else if (expression instanceof ConstantOperand) {
       return ResultColumn.ColumnType.CONSTANT;
+    } else if (expression instanceof NullOperand) {
+      return ResultColumn.ColumnType.RAW;
     } else {
       throw new IllegalArgumentException(
           "unsupported expression type: " + expression.getExpressionType());

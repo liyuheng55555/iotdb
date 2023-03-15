@@ -19,6 +19,7 @@
 
 package org.apache.iotdb.db.mpp.plan.parser;
 
+import org.apache.commons.math3.analysis.function.Exp;
 import org.apache.iotdb.common.rpc.thrift.TConsensusGroupType;
 import org.apache.iotdb.common.rpc.thrift.TSeriesPartitionSlot;
 import org.apache.iotdb.common.rpc.thrift.TTimePartitionSlot;
@@ -2338,21 +2339,38 @@ public class ASTVisitor extends IoTDBSqlParserBaseVisitor<Statement> {
       return parseConstantOperand(context.constant(0));
     }
 
-    if (context.caseWhenThenExpression() != null) {
-      return parseCaseWhenThenExpression(context.caseWhenThenExpression(), canUseFullPath);
+    if (context.caseWhenThenExpression1() != null) {
+      return parseCaseWhenThenExpression1(context.caseWhenThenExpression1(), canUseFullPath);
+    }
+
+    if (context.caseWhenThenExpression2() != null) {
+      return parseCaseWhenThenExpression2(context.caseWhenThenExpression2(), canUseFullPath);
     }
 
     throw new UnsupportedOperationException();
   }
 
-  private Expression parseCaseWhenThenExpression(
-      IoTDBSqlParser.CaseWhenThenExpressionContext context, boolean canUseFullPath) {
+  private Expression parseCaseWhenThenExpression1(
+      IoTDBSqlParser.CaseWhenThenExpression1Context context, boolean canUseFullPath) {
     Expression endElse = new NullOperand();
     if (context.elseExpression != null) { // get the last else expression
       endElse = parseExpression(context.elseExpression, canUseFullPath);
     }
     CaseWhenThenExpression result =
-        parseWhenThenExpressions(context.whenThenExpressions(), canUseFullPath, endElse);
+        parseWhenThenExpressions(context.whenThenExpressions(), canUseFullPath, null, endElse);
+    result.setRoot(true);
+    return result;
+  }
+
+  private Expression parseCaseWhenThenExpression2(
+          IoTDBSqlParser.CaseWhenThenExpression2Context context, boolean canUseFullPath) {
+    Expression endElse = new NullOperand();
+    if (context.elseExpression != null) { // get the last else expression
+      endElse = parseExpression(context.elseExpression, canUseFullPath);
+    }
+    Expression caseExpression = parseExpression(context.caseExpression, canUseFullPath);
+    CaseWhenThenExpression result =
+            parseWhenThenExpressions(context.whenThenExpressions(), canUseFullPath, caseExpression, endElse);
     result.setRoot(true);
     return result;
   }
@@ -2360,13 +2378,17 @@ public class ASTVisitor extends IoTDBSqlParserBaseVisitor<Statement> {
   private CaseWhenThenExpression parseWhenThenExpressions(
       IoTDBSqlParser.WhenThenExpressionsContext context,
       boolean canUseFullPath,
+      Expression caseExpression,
       Expression endElse) {
     Expression when = parseExpression(context.whenExpression, canUseFullPath);
     Expression then = parseExpression(context.thenExpression, canUseFullPath);
     Expression elseExpression = endElse;
     if (context.whenThenExpressions() != null) {
       elseExpression =
-          parseWhenThenExpressions(context.whenThenExpressions(), canUseFullPath, endElse);
+          parseWhenThenExpressions(context.whenThenExpressions(), canUseFullPath, caseExpression, endElse);
+    }
+    if (caseExpression != null) {
+      when = new EqualToExpression(when, caseExpression); // handle caseWhenThenExpression1
     }
     return new CaseWhenThenExpression(when, then, elseExpression, false);
   }

@@ -972,11 +972,15 @@ expression
     | unaryBeforeInExpression=expression OPERATOR_NOT? (OPERATOR_IN | OPERATOR_CONTAINS) LR_BRACKET constant (COMMA constant)* RR_BRACKET
     | leftExpression=expression OPERATOR_AND rightExpression=expression
     | leftExpression=expression OPERATOR_OR rightExpression=expression
-    | caseWhenThenExpression
+    | caseWhenThenExpression1 | caseWhenThenExpression2
     ;
 
-caseWhenThenExpression
-    : CASE whenThenExpressions (ELSE elseExpression=expression)?
+caseWhenThenExpression1
+    : CASE whenThenExpressions (ELSE elseExpression=expression)? END
+    ;
+
+caseWhenThenExpression2
+    : CASE caseExpression=expression whenThenExpressions (ELSE elseExpression=expression)? END
     ;
 
 whenThenExpressions
