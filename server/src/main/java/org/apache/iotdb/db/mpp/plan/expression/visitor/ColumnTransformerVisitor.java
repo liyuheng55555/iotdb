@@ -57,6 +57,7 @@ import org.apache.iotdb.db.mpp.transformation.dag.column.leaf.NullColumnTransfor
 import org.apache.iotdb.db.mpp.transformation.dag.column.leaf.TimeColumnTransformer;
 import org.apache.iotdb.db.mpp.transformation.dag.column.multi.MappableUDFColumnTransformer;
 import org.apache.iotdb.db.mpp.transformation.dag.column.ternary.BetweenColumnTransformer;
+import org.apache.iotdb.db.mpp.transformation.dag.column.ternary.CaseWhenThenColumnTransformer;
 import org.apache.iotdb.db.mpp.transformation.dag.column.unary.ArithmeticNegationColumnTransformer;
 import org.apache.iotdb.db.mpp.transformation.dag.column.unary.InColumnTransformer;
 import org.apache.iotdb.db.mpp.transformation.dag.column.unary.IsNullColumnTransformer;
@@ -74,6 +75,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.apache.iotdb.db.mpp.plan.expression.ExpressionType.BETWEEN;
+import static org.apache.iotdb.db.mpp.plan.expression.ExpressionType.CASE_WHEN_THEN;
 
 /** Responsible for constructing {@link ColumnTransformer} through Expression. */
 public class ColumnTransformerVisitor
@@ -153,6 +155,7 @@ public class ColumnTransformerVisitor
     return res;
   }
 
+  // 看看这个函数
   @Override
   public ColumnTransformer visitTernaryExpression(
       TernaryExpression ternaryExpression, ColumnTransformerVisitorContext context) {
@@ -431,6 +434,9 @@ public class ColumnTransformerVisitor
           secondColumnTransformer,
           thirdColumnTransformer,
           betweenExpression.isNotBetween());
+    } else if (expression.getExpressionType() == CASE_WHEN_THEN) {
+      return new CaseWhenThenColumnTransformer(
+          returnType, firstColumnTransformer, secondColumnTransformer, thirdColumnTransformer);
     } else {
       throw new UnsupportedOperationException(
           "Unsupported Expression Type: " + expression.getExpressionType());

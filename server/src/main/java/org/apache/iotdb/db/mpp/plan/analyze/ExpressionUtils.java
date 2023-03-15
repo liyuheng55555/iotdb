@@ -40,6 +40,7 @@ import org.apache.iotdb.db.mpp.plan.expression.leaf.TimeSeriesOperand;
 import org.apache.iotdb.db.mpp.plan.expression.leaf.TimestampOperand;
 import org.apache.iotdb.db.mpp.plan.expression.multi.FunctionExpression;
 import org.apache.iotdb.db.mpp.plan.expression.ternary.BetweenExpression;
+import org.apache.iotdb.db.mpp.plan.expression.ternary.CaseWhenThenExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.InExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.IsNullExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.LikeExpression;
@@ -213,6 +214,13 @@ public class ExpressionUtils {
             secondExpression,
             thirdExpression,
             ((BetweenExpression) expression).isNotBetween());
+      case CASE_WHEN_THEN:
+        return new CaseWhenThenExpression(
+                firstExpression,
+                secondExpression,
+                thirdExpression,
+                false
+        );
       default:
         throw new IllegalArgumentException(
             "unsupported expression type: " + expression.getExpressionType());

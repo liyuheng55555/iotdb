@@ -39,7 +39,8 @@ public abstract class CartesianProductVisitor<C>
         ternaryExpression,
         childResultsList.get(0),
         childResultsList.get(1),
-        childResultsList.get(2));
+        childResultsList.get(2)
+    );
   }
 
   @Override
