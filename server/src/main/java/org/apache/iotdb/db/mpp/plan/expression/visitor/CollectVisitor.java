@@ -21,10 +21,12 @@ package org.apache.iotdb.db.mpp.plan.expression.visitor;
 
 import org.apache.iotdb.db.mpp.plan.expression.Expression;
 import org.apache.iotdb.db.mpp.plan.expression.binary.BinaryExpression;
+import org.apache.iotdb.db.mpp.plan.expression.leaf.NullOperand;
 import org.apache.iotdb.db.mpp.plan.expression.ternary.TernaryExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.UnaryExpression;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,5 +54,10 @@ public abstract class CollectVisitor extends ExpressionAnalyzeVisitor<List<Expre
   @Override
   public List<Expression> visitUnaryExpression(UnaryExpression unaryExpression, Void context) {
     return mergeList(getResultsFromChild(unaryExpression, null));
+  }
+
+  @Override
+  public List<Expression> visitNullOperand(NullOperand nullOperand, Void context) {
+    return Collections.emptyList();
   }
 }

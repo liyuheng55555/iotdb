@@ -100,7 +100,11 @@ public class ExpressionAnalyzer {
         throw new SemanticException(
             "the suffix paths can only be measurement or one-level wildcard");
       }
-    } else if (expression instanceof TimestampOperand || expression instanceof ConstantOperand) {
+    } else if (
+            expression instanceof TimestampOperand ||
+                    expression instanceof ConstantOperand ||
+                    expression instanceof NullOperand
+    ) {
       // do nothing
     } else {
       throw new IllegalArgumentException(
@@ -300,7 +304,7 @@ public class ExpressionAnalyzer {
         }
       }
       return actualPaths;
-    } else if (expression instanceof TimestampOperand || expression instanceof ConstantOperand) {
+    } else if (expression instanceof TimestampOperand || expression instanceof ConstantOperand || expression instanceof NullOperand) {
       return new ArrayList<>();
     } else {
       throw new IllegalArgumentException(
@@ -347,7 +351,7 @@ public class ExpressionAnalyzer {
         PartialPath concatPath = prefixPath.concatPath(rawPath);
         patternTree.appendPathPattern(concatPath);
       }
-    } else if (predicate instanceof TimestampOperand || predicate instanceof ConstantOperand) {
+    } else if (predicate instanceof TimestampOperand || predicate instanceof ConstantOperand | predicate instanceof NullOperand) {
       // do nothing
     } else {
       throw new IllegalArgumentException(
@@ -544,6 +548,8 @@ public class ExpressionAnalyzer {
       return new Pair<>(null, true);
     } else if (predicate.getExpressionType().equals(ExpressionType.TIMESERIES)) {
       return new Pair<>(null, true);
+    } else if (predicate.getExpressionType().equals(ExpressionType.NULL)) {
+      return new Pair<>(null, true);
     } else {
       throw new IllegalArgumentException(
           "unsupported expression type: " + predicate.getExpressionType());
@@ -566,7 +572,7 @@ public class ExpressionAnalyzer {
         timeFilterExist = timeFilterExist || checkIfTimeFilterExist(childExpression);
       }
       return timeFilterExist;
-    } else if (predicate instanceof TimeSeriesOperand || predicate instanceof ConstantOperand) {
+    } else if (predicate instanceof TimeSeriesOperand || predicate instanceof ConstantOperand || predicate instanceof NullOperand) {
       return false;
     } else if (predicate instanceof TimestampOperand) {
       return true;

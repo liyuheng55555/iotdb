@@ -21,9 +21,11 @@ package org.apache.iotdb.db.mpp.plan.expression.visitor;
 
 import org.apache.iotdb.db.mpp.plan.expression.Expression;
 import org.apache.iotdb.db.mpp.plan.expression.binary.BinaryExpression;
+import org.apache.iotdb.db.mpp.plan.expression.leaf.NullOperand;
 import org.apache.iotdb.db.mpp.plan.expression.ternary.TernaryExpression;
 import org.apache.iotdb.db.mpp.plan.expression.unary.UnaryExpression;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.apache.iotdb.db.mpp.plan.analyze.ExpressionUtils.reconstructBinaryExpressions;
@@ -54,5 +56,10 @@ public abstract class CartesianProductVisitor<C>
   public List<Expression> visitUnaryExpression(UnaryExpression unaryExpression, C context) {
     List<List<Expression>> childResultsList = getResultsFromChild(unaryExpression, context);
     return reconstructUnaryExpressions(unaryExpression, childResultsList.get(0));
+  }
+
+  @Override
+  public List<Expression> visitNullOperand(NullOperand nullOperand, C context) {
+    return Collections.emptyList();
   }
 }
