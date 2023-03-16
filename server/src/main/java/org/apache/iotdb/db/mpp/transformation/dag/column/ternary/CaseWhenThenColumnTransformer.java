@@ -117,7 +117,7 @@ public class CaseWhenThenColumnTransformer extends TernaryColumnTransformer {
     if (getWhen().typeNotEquals(TypeEnum.BOOLEAN)){
       throw new UnsupportedOperationException("Unsupported Type");
     }
-    if (!getThen().getType().getClass().equals(getElse().getType().getClass())) {
+    if (getElse().getType() != null && !getThen().getType().getClass().equals(getElse().getType().getClass())) {
       throw new UnsupportedOperationException("CASE expression must have same type.");
     }
   }

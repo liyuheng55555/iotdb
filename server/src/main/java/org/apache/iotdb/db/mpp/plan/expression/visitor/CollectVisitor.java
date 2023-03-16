@@ -55,9 +55,4 @@ public abstract class CollectVisitor extends ExpressionAnalyzeVisitor<List<Expre
   public List<Expression> visitUnaryExpression(UnaryExpression unaryExpression, Void context) {
     return mergeList(getResultsFromChild(unaryExpression, null));
   }
-
-  @Override
-  public List<Expression> visitNullOperand(NullOperand nullOperand, Void context) {
-    return Collections.emptyList();
-  }
 }

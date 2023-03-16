@@ -300,10 +300,13 @@ public class ExpressionTypeAnalyzer {
     @Override
     public TSDataType visitCaseWhenThenExpression(
         CaseWhenThenExpression caseWhenThenExpression, Void context) {
-      process(caseWhenThenExpression.getWhen(), context);
+      process(caseWhenThenExpression.getWhen(), context); // TODO: as type transform not implement yet, maybe type check at this time
       TSDataType thenType = process(caseWhenThenExpression.getThen(), context);
       TSDataType elseType = process(caseWhenThenExpression.getElse(), context);
-      TSDataType type = TSDataType.getTsDataType((byte) Math.max(thenType.ordinal(), elseType.ordinal()));;
+      TSDataType type = thenType;
+      if (elseType != null) {
+        type = TSDataType.getTsDataType((byte) Math.max(thenType.ordinal(), elseType.ordinal()));
+      }
       return setExpressionType(caseWhenThenExpression, type);
     }
 

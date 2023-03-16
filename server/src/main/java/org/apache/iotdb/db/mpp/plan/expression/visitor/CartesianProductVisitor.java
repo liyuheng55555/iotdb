@@ -60,6 +60,6 @@ public abstract class CartesianProductVisitor<C>
 
   @Override
   public List<Expression> visitNullOperand(NullOperand nullOperand, C context) {
-    return Collections.emptyList();
+    return Collections.singletonList(nullOperand);
   }
 }
