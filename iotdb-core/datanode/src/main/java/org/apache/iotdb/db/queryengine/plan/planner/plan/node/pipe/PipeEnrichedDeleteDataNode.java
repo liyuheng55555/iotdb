@@ -199,6 +199,13 @@ public class PipeEnrichedDeleteDataNode extends AbstractDeleteDataNode {
 
   @Override
   public SearchNode merge(List<SearchNode> searchNodes) {
-    return deleteDataNode.merge(searchNodes);
+    List<SearchNode> unrichedDeleteDataNodes =
+        searchNodes.stream()
+            .map(
+                searchNode ->
+                    (SearchNode) ((PipeEnrichedDeleteDataNode) searchNode).getDeleteDataNode())
+            .collect(Collectors.toList());
+    return new PipeEnrichedDeleteDataNode(
+        (DeleteDataNode) deleteDataNode.merge(unrichedDeleteDataNodes));
   }
 }
