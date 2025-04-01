@@ -815,7 +815,7 @@ public class NodeManager {
           System.nanoTime()
               + TimeUnit.MILLISECONDS.toNanos(
                   (CONF.getHeartbeatIntervalInMs() + StatisticsService.STATISTICS_UPDATE_INTERVAL)
-                      * 3);
+                      * 6);
       while (filterConfigNodeThroughStatus(NodeStatus.Running).size() <= 1) {
         if (System.nanoTime() > deadline) {
           return new TSStatus(TSStatusCode.REMOVE_CONFIGNODE_ERROR.getStatusCode())
