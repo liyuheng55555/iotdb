@@ -1872,6 +1872,7 @@ public class DataNodeInternalRPCServiceImpl implements IDataNodeRPCService.Iface
 
   @Override
   public TDataNodeHeartbeatResp getDataNodeHeartBeat(TDataNodeHeartbeatReq req) throws TException {
+    long start = System.nanoTime();
     TDataNodeHeartbeatResp resp = new TDataNodeHeartbeatResp();
 
     // Judging leader if necessary
@@ -1957,6 +1958,10 @@ public class DataNodeInternalRPCServiceImpl implements IDataNodeRPCService.Iface
                   req.getHeartbeatTimestamp(),
                   req.getCurrentRegionOperations()));
     }
+
+    LOGGER.info(
+        "heartbeat processing time: {} ms",
+        TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
 
     return resp;
   }

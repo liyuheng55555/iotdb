@@ -820,7 +820,7 @@ public class NodeManager {
         if (System.nanoTime() > deadline) {
           return new TSStatus(TSStatusCode.REMOVE_CONFIGNODE_ERROR.getStatusCode())
               .setMessage(
-                  "Remove ConfigNode failed because there is no other ConfigNode in Running status in current Cluster.");
+                  "Remove ConfigNode failed because there is no other ConfigNode in Running status in current Cluster. Please use 'show confignodes' to check. ");
         }
         try {
           Thread.sleep(1000);
